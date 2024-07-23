@@ -1,13 +1,11 @@
-package com.example.lokalassignment
+package com.example.lokalassignment.activity
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.replace
+import com.example.lokalassignment.fragment.BookmarksFragment
+import com.example.lokalassignment.fragment.JobsFragment
+import com.example.lokalassignment.R
 import com.example.lokalassignment.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
