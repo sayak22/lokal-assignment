@@ -21,5 +21,5 @@ interface BookmarkedJobsDAO {
 
     // LiveData is always executed in background thread.
     @Query("SELECT * FROM bookmarkedJobs")
-    fun getJobs(): LiveData<List<BookmarkedJob>>
+    fun getJobs(): LiveData<MutableList<BookmarkedJob>>
 }

@@ -52,14 +52,16 @@ class JobsAdapter(private var jobs: MutableList<Job>) :
                                 BookmarkedJob(
                                     job.id, job.title,
                                     job.primaryDetails?.destination,
-                                    job.primaryDetails?.salary, job.phoneNumber
+                                    job.primaryDetails?.salary, job.phoneNumber,
+                                    job.isBookmarked
                                 )
                             )
                         } else {
                             db.bookmarkedJobDAO().deleteJob(BookmarkedJob(
                                 job.id, job.title,
                                 job.primaryDetails?.destination,
-                                job.primaryDetails?.salary, job.phoneNumber
+                                job.primaryDetails?.salary, job.phoneNumber,
+                                job.isBookmarked
                             ))
                         }
                     }

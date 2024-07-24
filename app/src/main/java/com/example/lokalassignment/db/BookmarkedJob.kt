@@ -11,5 +11,6 @@ data class BookmarkedJob(
     val title: String?,
     val destination: String?,
     val salary: String?,
-    val phoneNumber: String?
+    val phoneNumber: String?,
+    val isBookmarked: Boolean
 )
