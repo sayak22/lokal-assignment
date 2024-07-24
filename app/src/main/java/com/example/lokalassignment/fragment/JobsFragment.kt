@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lokalassignment.R
 import com.example.lokalassignment.adapter.JobsAdapter
+import com.example.lokalassignment.db.BookmarkedJobDatabase
 import com.example.lokalassignment.interfaces.ApiService
 import com.example.lokalassignment.model.ApiResponse
 import com.example.lokalassignment.model.Job
@@ -81,7 +82,7 @@ class JobsFragment : Fragment() {
             }
         }
     }
-
+    // ApiResponse is a wrapper data class that wraps the MutableList of Job
     private suspend fun fetchJobsFromApi(): retrofit2.Response<ApiResponse<MutableList<Job>>> {
         return withContext(Dispatchers.IO) {
             val retrofit = createRetrofitInstance()
