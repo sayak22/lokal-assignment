@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:backgroundTint="#2b2d30"
+    android:layout_margin="6dp"
     app:cardCornerRadius="18dp"
     app:cardElevation="4dp">
 
@@ -34,7 +35,7 @@
                 android:id="@+id/locationTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:gravity="center"
                 android:text="Location"
                 android:padding="4dp"
@@ -85,7 +86,7 @@
                         android:src="@drawable/ic_call" />
 
                     <TextView
-                        android:id="@+id/PhoneTV"
+                        android:id="@+id/phoneTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="+91 1234567890"
@@ -101,6 +102,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="10dp"
                 android:src="@drawable/ic_bookmark_unadded" />
         </LinearLayout>
 

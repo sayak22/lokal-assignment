@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "bookmarkedJobs")
 data class BookmarkedJob(
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val id: Long,
     val title: String,
     val place: String,

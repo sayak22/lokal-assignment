@@ -1,10 +1,12 @@
 package com.example.lokalassignment.interfaces
 
+import com.example.lokalassignment.model.ApiResponse
 import com.example.lokalassignment.model.Job
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface MyApiService {
+interface ApiService {
     @GET("common/jobs")
-    suspend fun getJobs(@Query("page") page: Int): List<Job>
+    fun getJobs(@Query("page") page: Int): Call<ApiResponse<MutableList<Job>>>
 }
