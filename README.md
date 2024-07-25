@@ -10,6 +10,14 @@
 - **Bookmarks**: Save jobs to your bookmarks for easy access later. Bookmarking is available offline.
 - **Offline Access**: Access bookmarked jobs even when offline.
 
+## Technical Details
+
+- **Retrofit**: Used for making API calls to fetch job listings and details.
+- **RecyclerView**: Used to display job listings in a scrollable list with infinite scrolling.
+- **MVVM Architecture**: Implemented to separate concerns and manage UI-related data efficiently.
+- **Room Database**: Used to store bookmarked jobs locally for offline access.
+- **LiveData**: Employed to observe data changes and update the UI accordingly.
+
 ## How to Use
 
 1. **Home Screen**: Upon opening the app, you will be presented with a list of job opportunities in the "Jobs" section.
