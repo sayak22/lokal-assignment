@@ -19,7 +19,6 @@ interface BookmarkedJobsDAO {
     @Delete
     suspend fun deleteJob(bookmarkedJob: BookmarkedJob)
 
-    // LiveData is always executed in background thread.
     @Query("SELECT * FROM bookmarkedJobs")
     fun getJobs(): LiveData<MutableList<BookmarkedJob>>
 }

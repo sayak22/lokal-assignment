@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -15,40 +14,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lokalassignment.R
 import com.example.lokalassignment.adapter.BookmarksAdapter
-import com.example.lokalassignment.adapter.JobsAdapter
 import com.example.lokalassignment.db.BookmarkedJob
-import com.example.lokalassignment.db.BookmarkedJobDatabase
+import com.example.lokalassignment.db.BookmarkedJobViewModel
 import com.example.lokalassignment.model.Job
-import com.example.lokalassignment.viewModel.BookmarkedJobsViewModel
-import com.example.lokalassignment.viewModel.BookmarkedJobsViewModelFactory
 import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
 
 class BookmarksFragment : Fragment() {
-
-
-    private val dao by lazy {
-        BookmarkedJobDatabase.getDatabase(requireContext()).bookmarkedJobDAO()
-    }
-
-    private val viewModel: BookmarkedJobsViewModel by viewModels {
-        BookmarkedJobsViewModelFactory(dao)
-    }
 
     // UI Components
     private lateinit var bookmarksAdapter: BookmarksAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressDialog: ProgressDialog
 
-//    private lateinit var bookmarkedJobsViewModel: BookmarkedJobsViewModel
+    // ViewModel for managing bookmarked jobs
+    private lateinit var bookmarkedJobViewModel: BookmarkedJobViewModel
 
-    // Data
+    // Data: List of bookmarked jobs
     private var bookmarkList: MutableList<Job> = mutableListOf()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,14 +38,16 @@ class BookmarksFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_bookmarks, container, false)
+
         // Initialize RecyclerView
         initializeRecyclerView(rootView)
 
         // Initialize progress dialog
         initializeProgressDialog()
 
-        // Fetch jobs data using coroutines
+        // Fetch bookmarked jobs using coroutines
         fetchBookmarks()
+
         return rootView
     }
 
@@ -72,6 +56,9 @@ class BookmarksFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         bookmarksAdapter = BookmarksAdapter(bookmarkList)
         recyclerView.adapter = bookmarksAdapter
+
+        // Initialize the ViewModel for bookmarked jobs
+        bookmarkedJobViewModel = ViewModelProvider(this)[BookmarkedJobViewModel::class.java]
     }
 
     private fun initializeProgressDialog() {
@@ -82,7 +69,9 @@ class BookmarksFragment : Fragment() {
 
     private fun fetchBookmarks() {
         lifecycleScope.launch {
-            viewModel.jobs.observe(viewLifecycleOwner, Observer { data ->
+            // Observe changes in bookmarked jobs LiveData
+            bookmarkedJobViewModel.getJobs.observe(viewLifecycleOwner, Observer { data ->
+                // Map BookmarkedJob objects to Job objects
                 bookmarkList = data.map { bookmarkedJob ->
                     Job(
                         id = bookmarkedJob.id,
@@ -95,9 +84,9 @@ class BookmarksFragment : Fragment() {
                     )
                 }.toMutableList()
 
+                // Update the adapter with the new data
                 bookmarksAdapter.setData(bookmarkList)
             })
-
         }
     }
 }

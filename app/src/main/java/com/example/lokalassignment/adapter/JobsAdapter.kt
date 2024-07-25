@@ -10,9 +10,10 @@ import com.example.lokalassignment.R
 import com.example.lokalassignment.db.BookmarkedJob
 import com.example.lokalassignment.db.BookmarkedJobDatabase
 import com.example.lokalassignment.model.Job
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class JobsAdapter(private var jobs: MutableList<Job>) :
     RecyclerView.Adapter<JobsAdapter.ViewHolder>() {
@@ -31,6 +32,9 @@ class JobsAdapter(private var jobs: MutableList<Job>) :
 
     override fun getItemCount(): Int = jobs.size
 
+    /**
+     * ViewHolder class for holding the job item views.
+     */
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val titleTextView: TextView = itemView.findViewById(R.id.jobTitleTV)
         private val locationTextView: TextView = itemView.findViewById(R.id.locationTV)
@@ -41,43 +45,77 @@ class JobsAdapter(private var jobs: MutableList<Job>) :
         init {
             db = BookmarkedJobDatabase.getDatabase(itemView.context)
 
+            // Set click listener for the bookmark status image view
             bookmarkStatusImageView.setOnClickListener {
                 val job = jobs[bindingAdapterPosition]
-                job.isBookmarked = !job.isBookmarked
+                job.isBookmarked = if (job.isBookmarked == 0) 1 else 0
 
-                GlobalScope.launch(Dispatchers.IO) {
-                    job.id?.let {
-                        if (job.isBookmarked) {
-                            db.bookmarkedJobDAO().insertJob(
-                                BookmarkedJob(
-                                    job.id, job.title,
-                                    job.primaryDetails?.destination,
-                                    job.primaryDetails?.salary, job.phoneNumber,
-                                    job.isBookmarked
-                                )
-                            )
-                        } else {
-                            db.bookmarkedJobDAO().deleteJob(BookmarkedJob(
-                                job.id, job.title,
-                                job.primaryDetails?.destination,
-                                job.primaryDetails?.salary, job.phoneNumber,
-                                job.isBookmarked
-                            ))
-                        }
+                // Update bookmark status in the database
+                CoroutineScope(Dispatchers.IO).launch {
+                    if (job.isBookmarked == 1) {
+                        addJobToBookmarks(job)
+                    } else {
+                        removeJobFromBookmarks(job)
+                    }
+
+                    // Update UI on the main thread
+                    withContext(Dispatchers.Main) {
+                        updateBookmarkIcon(job)
                     }
                 }
-
-                val drawableResId =
-                    if (job.isBookmarked) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark_unadded
-                bookmarkStatusImageView.setImageResource(drawableResId)
             }
         }
 
+        /**
+         * Binds job data to the views.
+         */
         fun bind(job: Job) {
             titleTextView.text = job.title
             locationTextView.text = job.primaryDetails?.destination ?: "NA"
             salaryTextView.text = job.primaryDetails?.salary ?: "NA"
             phoneTextView.text = job.phoneNumber
+            updateBookmarkIcon(job)
+        }
+
+        /**
+         * Updates the bookmark icon based on the job's bookmark status.
+         */
+        private fun updateBookmarkIcon(job: Job) {
+            val drawableResId =
+                if (job.isBookmarked == 1) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark_unadded
+            bookmarkStatusImageView.setImageResource(drawableResId)
+        }
+
+        /**
+         * Adds the job to bookmarks in the database.
+         */
+        private suspend fun addJobToBookmarks(job: Job) {
+            db.bookmarkedJobDAO().insertJob(
+                BookmarkedJob(
+                    id = job.id,
+                    title = job.title,
+                    destination = job.primaryDetails?.destination,
+                    salary = job.primaryDetails?.salary,
+                    phoneNumber = job.phoneNumber,
+                    isBookmarked = job.isBookmarked
+                )
+            )
+        }
+
+        /**
+         * Removes the job from bookmarks in the database.
+         */
+        private suspend fun removeJobFromBookmarks(job: Job) {
+            db.bookmarkedJobDAO().deleteJob(
+                BookmarkedJob(
+                    id = job.id,
+                    title = job.title,
+                    destination = job.primaryDetails?.destination,
+                    salary = job.primaryDetails?.salary,
+                    phoneNumber = job.phoneNumber,
+                    isBookmarked = job.isBookmarked
+                )
+            )
         }
     }
 }

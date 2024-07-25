@@ -12,11 +12,11 @@ import com.google.gson.annotations.SerializedName
  * @param isBookmarked Indicates whether the job is bookmarked by the user (default is false).
  */
 data class Job(
-    @SerializedName("id") val id: Long?,
+    @SerializedName("id") val id: Long,
     @SerializedName("title") val title: String?,
     @SerializedName("primary_details") val primaryDetails: PrimaryDetails?,
     @SerializedName("whatsapp_no") val phoneNumber: String?,
-    var isBookmarked: Boolean = false
+    var isBookmarked: Int = 0
 ) {
     /**
      * Represents primary details related to the job.
