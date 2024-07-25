@@ -1,5 +1,6 @@
 package com.example.lokalassignment.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lokalassignment.R
+import com.example.lokalassignment.activity.JobDetailActivity
 import com.example.lokalassignment.db.BookmarkedJob
 import com.example.lokalassignment.db.BookmarkedJobDatabase
 import com.example.lokalassignment.model.Job
@@ -44,6 +46,23 @@ class JobsAdapter(private var jobs: MutableList<Job>) :
 
         init {
             db = BookmarkedJobDatabase.getDatabase(itemView.context)
+
+            // Set click listener for the entire item view
+            itemView.setOnClickListener {
+                val job = jobs[bindingAdapterPosition]
+
+                // Creating an Intent to launch JobDetailActivity
+                val intent = Intent(itemView.context, JobDetailActivity::class.java)
+
+                // Passing all the data as extras to the intent
+                intent.putExtra("jobId", job.id)
+                intent.putExtra("jobTitle", job.title)
+                intent.putExtra("jobLocation", job.primaryDetails?.destination)
+                intent.putExtra("jobSalary", job.primaryDetails?.salary)
+                intent.putExtra("jobPhoneNumber", job.phoneNumber)
+
+                itemView.context.startActivity(intent)
+            }
 
             // Set click listener for the bookmark status image view
             bookmarkStatusImageView.setOnClickListener {

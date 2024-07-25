@@ -15,6 +15,9 @@
         android:theme="@style/Theme.LokalAssignment"
         tools:targetApi="31">
         <activity
+            android:name=".activity.JobDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
